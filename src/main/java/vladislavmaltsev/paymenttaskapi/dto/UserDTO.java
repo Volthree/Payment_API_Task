@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    int id;
+    long id;
     String name;
     BigDecimal usd;
     Role role;

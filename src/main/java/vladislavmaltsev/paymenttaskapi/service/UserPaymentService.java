@@ -27,7 +27,8 @@ public class UserPaymentService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDTO getMoney(int id) {
+    public UserDTO getMoney(long id) {
+        System.out.println("Enter getMoney");
         UserDTO userDTO =
                 mapDTOAndClass(
                         userPaymentRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " does not exists")),
@@ -35,7 +36,7 @@ public class UserPaymentService implements UserDetailsService {
 
         //logic
         userDTO.setUsd(userDTO.getUsd().subtract(new BigDecimal("1.1")));
-
+        System.out.println("End getMoney");
         return save(userDTO).orElseThrow();
     }
 
@@ -47,16 +48,18 @@ public class UserPaymentService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+        System.out.println("Enter loadUserByUsername");
         var u = userPaymentRepository.findByName(username);
         System.out.println(u.orElseThrow());
-        return userPaymentRepository.findByName(username)
+        var v = userPaymentRepository.findByName(username)
                 .map(user -> new org.springframework.security.core.userdetails.User(
-                        user.getName(),
+                        String.valueOf(user.getId()),
                         user.getPass(),
                         Collections.singleton(user.getRole())
                 ))
                 .orElseThrow(() -> new NoSuchElementException(username + " does not exists"));
+        System.out.println("End loadUserByUsername");
+        return v;
     }
 
     public Optional<UserDTO> save(UserDTO userParametersDTO) {
