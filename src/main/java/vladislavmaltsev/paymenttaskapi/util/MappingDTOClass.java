@@ -2,10 +2,12 @@ package vladislavmaltsev.paymenttaskapi.util;
 
 import org.modelmapper.ModelMapper;
 
+import java.util.Optional;
+
 public class MappingDTOClass {
     private MappingDTOClass() {}
-    public static <D, C> C mapDTOAndClass(D dto, Class<C> clazz) {
+    public static <D, C> Optional<C> mapDTOAndClass(D dto, Class<C> clazz) {
         ModelMapper modelMapper = new ModelMapper();
-        return dto != null ? modelMapper.map(dto, clazz) : null;
+        return Optional.ofNullable(modelMapper.map(dto, clazz));
     }
 }

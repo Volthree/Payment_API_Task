@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
 
@@ -24,7 +25,8 @@ public class User {
     @Column(name = "usd")
     BigDecimal usd;
     @Column(name = "role")
-    String role;
+    @Enumerated(EnumType.STRING)
+    Role role;
     @Column(name = "pass")
     String pass;
 }

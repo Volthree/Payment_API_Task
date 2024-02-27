@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
 
@@ -18,6 +19,6 @@ public class UserDTO {
     int id;
     String name;
     BigDecimal usd;
-    String role;
+    Role role;
     String pass;
 }
