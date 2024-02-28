@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vladislavmaltsev.paymenttaskapi.entity.User;
-import vladislavmaltsev.paymenttaskapi.repository.UserPaymentRepository;
+import vladislavmaltsev.paymenttaskapi.repository.UserRepository;
 import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserPaymentRepository userPaymentRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTotenService jwtTotenService;
     private final AuthenticationManager authenticationManager;
@@ -22,11 +22,11 @@ public class AuthService {
     public AuthenticationResponse register(RegisterRequest registerRequest) {
         var user = User.builder()
                 .name(registerRequest.getName())
-                .usd(new BigDecimal("8"))
+//                .usd(new BigDecimal("8"))
                 .pass(passwordEncoder.encode(registerRequest.getPass()))
                 .role(Role.USER)
                 .build();
-        userPaymentRepository.save(user);
+        userRepository.save(user);
         var token = jwtTotenService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
@@ -40,7 +40,7 @@ public class AuthService {
                         authenticationRequest.getPass()
                 )
         );
-        var user = userPaymentRepository.findByName(authenticationRequest.getName()).orElseThrow();
+        var user = userRepository.findByName(authenticationRequest.getName()).orElseThrow();
         var token = jwtTotenService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)

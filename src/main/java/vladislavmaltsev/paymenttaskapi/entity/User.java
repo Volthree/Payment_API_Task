@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,13 +28,14 @@ public class User implements UserDetails{
     long id;
     @Column(name = "name", unique = true, nullable = false)
     String name;
-    @Column(name = "usd")
-    BigDecimal usd;
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     Role role;
     @Column(name = "pass", nullable = false)
     String pass;
+
+    @OneToMany(mappedBy = "payments", cascade = CascadeType.ALL)
+    List<Payment> paymentList = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

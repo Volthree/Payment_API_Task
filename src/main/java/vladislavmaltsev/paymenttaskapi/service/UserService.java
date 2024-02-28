@@ -1,49 +1,46 @@
 package vladislavmaltsev.paymenttaskapi.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vladislavmaltsev.paymenttaskapi.dto.PaymentDTO;
 import vladislavmaltsev.paymenttaskapi.dto.UserDTO;
 import vladislavmaltsev.paymenttaskapi.entity.User;
-import vladislavmaltsev.paymenttaskapi.repository.UserPaymentRepository;
+import vladislavmaltsev.paymenttaskapi.repository.UserRepository;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static vladislavmaltsev.paymenttaskapi.util.MappingDTOClass.mapDTOAndClass;
 
 @Service
-public class UserPaymentService implements UserDetailsService {
+@RequiredArgsConstructor
+public class UserService implements UserDetailsService {
 
-    private final UserPaymentRepository userPaymentRepository;
+    private final UserRepository userRepository;
+    private final PaymentService paymentService;
 
-    public UserPaymentService(UserPaymentRepository userPaymentRepository) {
-        this.userPaymentRepository = userPaymentRepository;
-    }
 
     @Transactional
-    public UserDTO getMoney(String name) {
+    public PaymentDTO getMoney(String name) {
         System.out.println("Enter getMoney");
         UserDTO userDTO =
                 mapDTOAndClass(
-                        userPaymentRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name + " does not exists")),
+                        userRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name + " does not exists")),
                         UserDTO.class).orElseThrow();
-
-        //logic
-        userDTO.setUsd(userDTO.getUsd().subtract(new BigDecimal("1.1")));
-        System.out.println("End getMoney");
-        return save(userDTO).orElseThrow();
+        var paymentDto = paymentService.getPayment(userDTO.getName());
+        paymentDto.setAmount(paymentDto.getAmount().subtract(new BigDecimal("1.1")));
+        paymentDto.setDate(new Date());
+        return paymentService.savePayment(paymentDto);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("Enter loadUserByUsername");
-        var v = userPaymentRepository.findByName(username)
+        var v = userRepository.findByName(username)
                 .map(user -> new org.springframework.security.core.userdetails.User(
                         String.valueOf(user.getUsername()),
                         user.getPass(),
@@ -57,7 +54,7 @@ public class UserPaymentService implements UserDetailsService {
     public Optional<UserDTO> save(UserDTO userParametersDTO) {
         return Optional.ofNullable(
                         mapDTOAndClass(
-                                userPaymentRepository.save(
+                                userRepository.save(
                                         Objects.requireNonNull(mapDTOAndClass(userParametersDTO,
                                                 User.class).orElseThrow())
                                 ),

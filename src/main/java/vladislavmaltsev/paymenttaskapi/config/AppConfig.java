@@ -9,18 +9,19 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.client.RestTemplate;
-import vladislavmaltsev.paymenttaskapi.service.UserPaymentService;
+import vladislavmaltsev.paymenttaskapi.service.UserService;
 
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
-    private final UserPaymentService userPaymentService;
+    private final UserService userService;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userPaymentService);
+        authenticationProvider.setUserDetailsService(userService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
@@ -35,5 +36,10 @@ public class AppConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityContextLogoutHandler securityContextLogoutHandler(){
+        return new  SecurityContextLogoutHandler();
     }
 }

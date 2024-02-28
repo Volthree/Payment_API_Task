@@ -9,19 +9,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import vladislavmaltsev.paymenttaskapi.service.JwtTotenService;
-import vladislavmaltsev.paymenttaskapi.service.UserPaymentService;
+import vladislavmaltsev.paymenttaskapi.service.UserService;
 
 import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTotenService jwtTotenService;
-    private final UserPaymentService userPaymentService;
+    private final UserService userService;
     @Override
     protected void doFilterInternal(
             @Nonnull HttpServletRequest request,
@@ -38,7 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwt = authenticationHeader.substring(7);
         userName = jwtTotenService.getUserNameFromToken(jwt);
         if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userPaymentService.loadUserByUsername(userName);
+            UserDetails userDetails = userService.loadUserByUsername(userName);
             if(jwtTotenService.isTokenValid(jwt, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

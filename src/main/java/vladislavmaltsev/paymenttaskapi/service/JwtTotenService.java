@@ -5,8 +5,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vladislavmaltsev.paymenttaskapi.entity.JwtTokenBlacklist;
+import vladislavmaltsev.paymenttaskapi.repository.JwtTokenBlacklistRepository;
 
 import java.security.Key;
 import java.time.LocalDate;
@@ -15,8 +19,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtTotenService {
-
+    private final JwtTokenBlacklistRepository jwtTokenBlacklistRepository;
     private static final String secterKey = "dGhpcyBpcyBuYW1lIGhlcmUgYW5kIGkgaG9wZSBpdCB3aWxsIGhlbHA=";
     public String getUserNameFromToken(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -34,6 +39,12 @@ public class JwtTotenService {
                 .build()
                 .parseUnsecuredClaims(token)
                 .getPayload();
+    }
+    @Transactional
+    public void invalidateToken(String token) {
+        JwtTokenBlacklist tokenBlacklist = new JwtTokenBlacklist();
+        tokenBlacklist.setToken(token);
+        jwtTokenBlacklistRepository.save(tokenBlacklist);
     }
 
     private Key getSecretKey() {
@@ -65,7 +76,6 @@ public class JwtTotenService {
                 .claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-//                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 }

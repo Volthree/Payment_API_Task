@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import vladislavmaltsev.paymenttaskapi.repository.UserPaymentRepository;
+import vladislavmaltsev.paymenttaskapi.repository.UserRepository;
 import vladislavmaltsev.paymenttaskapi.service.JwtTotenService;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class CustomAuth extends SimpleUrlAuthenticationSuccessHandler {
-    private final UserPaymentRepository userPaymentRepository;
+    private final UserRepository userRepository;
     private final JwtTotenService jwtTokenService;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -36,7 +36,7 @@ public class CustomAuth extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     public Long getUserIdFromUserDetails(UserDetails userDetails) {
-        return userPaymentRepository.findById(Long.parseLong(userDetails.getUsername())).orElseThrow().getId();
+        return userRepository.findById(Long.parseLong(userDetails.getUsername())).orElseThrow().getId();
     }
 
     private String determineTargetUrl(Long userId) {
