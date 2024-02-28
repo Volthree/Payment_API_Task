@@ -27,11 +27,11 @@ public class UserPaymentService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDTO getMoney(long id) {
+    public UserDTO getMoney(String name) {
         System.out.println("Enter getMoney");
         UserDTO userDTO =
                 mapDTOAndClass(
-                        userPaymentRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + " does not exists")),
+                        userPaymentRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name + " does not exists")),
                         UserDTO.class).orElseThrow();
 
         //logic

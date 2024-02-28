@@ -29,10 +29,11 @@ public class JwtTotenService {
 
     private Claims getClaims(String token){
         return Jwts.parser()
+                .unsecured()
                 .setSigningKey(getSecretKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseUnsecuredClaims(token)
+                .getPayload();
     }
 
     private Key getSecretKey() {
@@ -61,11 +62,10 @@ public class JwtTotenService {
             Map<String, Object> claims,
             UserDetails userDetails){
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .issuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .claims(claims)
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+//                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 }

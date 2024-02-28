@@ -1,4 +1,4 @@
-package vladislavmaltsev.paymenttaskapi.controller;
+package vladislavmaltsev.paymenttaskapi.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,11 +1,15 @@
 package vladislavmaltsev.paymenttaskapi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import vladislavmaltsev.paymenttaskapi.service.AuthService;
-import vladislavmaltsev.paymenttaskapi.service.UserPaymentService;
+import org.springframework.web.client.RestTemplate;
+import vladislavmaltsev.paymenttaskapi.dto.UserDTO;
+import vladislavmaltsev.paymenttaskapi.service.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -13,20 +17,7 @@ import vladislavmaltsev.paymenttaskapi.service.UserPaymentService;
 public class UserController {
     private final UserPaymentService userPaymentService;
     private final AuthService authService;
-
- /*   @GetMapping(value = "/login")
-    public String logIn() {
-        System.out.println("Enter in controller login");
-        return "logpage";
-    }
-
-    @GetMapping(value = "/payment/{id}")
-    @ResponseBody
-    public UserDTO payment(@PathVariable long id) {
-        var user = userPaymentService.getMoney(id);
-        System.out.println(user);
-        return user;
-    }*/
+    private final RestTemplate restTemplate;
 
     @PostMapping("/register")
     private ResponseEntity<AuthenticationResponse> register(
@@ -36,11 +27,16 @@ public class UserController {
         return ResponseEntity.ok(authService.register(registerRequest));
     }
     @GetMapping("/authenticate")
-    private ResponseEntity<AuthenticationResponse> authenticate(
+    private ResponseEntity<String> authenticate(
             @RequestBody AuthenticationRequest authenticationRequest
     ){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + authService.authenticate(authenticationRequest).getToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = "http://localhost:8080/api/payment/"+userPaymentService.loadUserByUsername(authenticationRequest.getName()).getUsername();
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         System.out.println("authenticate");
-        return ResponseEntity.ok(authService.authenticate(authenticationRequest));
+        return response;
     }
 
     @PostMapping("/demo")
