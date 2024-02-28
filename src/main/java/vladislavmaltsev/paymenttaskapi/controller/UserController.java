@@ -1,39 +1,24 @@
 package vladislavmaltsev.paymenttaskapi.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import vladislavmaltsev.paymenttaskapi.component.JwtTokenProvider;
-import vladislavmaltsev.paymenttaskapi.dto.UserDTO;
-import vladislavmaltsev.paymenttaskapi.entity.User;
+import vladislavmaltsev.paymenttaskapi.service.AuthService;
 import vladislavmaltsev.paymenttaskapi.service.UserPaymentService;
 
 @Controller
+@RequiredArgsConstructor
+@RequestMapping("/task1")
 public class UserController {
     private final UserPaymentService userPaymentService;
-    private final JwtTokenProvider jwtTokenProvider;
-    public UserController(UserPaymentService userPaymentService, JwtTokenProvider jwtTokenProvider,
-                          JwtTokenProvider jwtTokenProvider1) {
-        this.userPaymentService = userPaymentService;
-        this.jwtTokenProvider = jwtTokenProvider1;
-    }
+    private final AuthService authService;
 
-    @GetMapping(value = "/login")
+ /*   @GetMapping(value = "/login")
     public String logIn() {
-        System.out.println("Enter in controller //login");
+        System.out.println("Enter in controller login");
         return "logpage";
     }
-    @PostMapping(value = "/login")
-    @ResponseBody
-    public String logInPost(@RequestParam String username,
-                            @RequestParam String password){
-        System.out.println("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
-        return null;
-    }
-
-//    @GetMapping(value = "/logout")
-//    public User logOut() {
-//        return User.builder().build();
-//    }
 
     @GetMapping(value = "/payment/{id}")
     @ResponseBody
@@ -41,5 +26,26 @@ public class UserController {
         var user = userPaymentService.getMoney(id);
         System.out.println(user);
         return user;
+    }*/
+
+    @PostMapping("/register")
+    private ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest registerRequest
+    ){
+        System.out.println("register");
+        return ResponseEntity.ok(authService.register(registerRequest));
+    }
+    @GetMapping("/authenticate")
+    private ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody AuthenticationRequest authenticationRequest
+    ){
+        System.out.println("authenticate");
+        return ResponseEntity.ok(authService.authenticate(authenticationRequest));
+    }
+
+    @PostMapping("/demo")
+    private ResponseEntity<String> demo(
+    ){
+        return ResponseEntity.ok("Hello epta");
     }
 }

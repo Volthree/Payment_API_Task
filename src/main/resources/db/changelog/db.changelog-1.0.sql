@@ -4,7 +4,7 @@
 CREATE TABLE users
 (
     id   serial PRIMARY KEY,
-    name VARCHAR(64) NOT NULL,
+    name VARCHAR(64) unique NOT NULL,
     usd  numeric      default 0,
     role varchar(32),
     pass varchar(128) default '123'

@@ -40,20 +40,12 @@ public class UserPaymentService implements UserDetailsService {
         return save(userDTO).orElseThrow();
     }
 
-//    @Transactional
-//    public User getUser(int id) {
-//        return userPaymentRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id + "not exists"));
-//    }
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("Enter loadUserByUsername");
-        var u = userPaymentRepository.findByName(username);
-        System.out.println(u.orElseThrow());
         var v = userPaymentRepository.findByName(username)
                 .map(user -> new org.springframework.security.core.userdetails.User(
-                        String.valueOf(user.getId()),
+                        String.valueOf(user.getUsername()),
                         user.getPass(),
                         Collections.singleton(user.getRole())
                 ))
