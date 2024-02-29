@@ -1,4 +1,4 @@
-package vladislavmaltsev.paymenttaskapi.config;
+package vladislavmaltsev.paymenttaskapi.filter;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -35,17 +35,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String userName;
         boolean deleted = false;
         System.out.println("in filter " + authenticationHeader);
-        if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
+        if (
+//                !Objects.equals(request.getRequestURI(), "/api/login") &&
+                (authenticationHeader == null || !authenticationHeader.startsWith("Bearer "))) {
             System.out.println("Bad token");
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authenticationHeader.substring(7);
+            jwt = authenticationHeader.substring(7);
 
-        if(Objects.equals(request.getRequestURI(), "/api/login")){
-            jwtTotenService.deleteTokenFromBalskList(jwt);
-            deleted = true;
-        }
+
+//        if(Objects.equals(request.getRequestURI(), "/api/login")){
+//            System.out.println("DELETE TOKEN");
+//            jwtTotenService.deleteTokenFromBalskList(jwt);
+//            deleted = true;
+//        }
         userName = jwtTotenService.getUserNameFromToken(jwt);
         if (userName != null
                 && SecurityContextHolder.getContext().getAuthentication() == null

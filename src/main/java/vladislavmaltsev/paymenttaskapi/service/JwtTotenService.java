@@ -2,7 +2,6 @@ package vladislavmaltsev.paymenttaskapi.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import vladislavmaltsev.paymenttaskapi.entity.JwtTokenBlacklist;
 import vladislavmaltsev.paymenttaskapi.repository.JwtTokenBlacklistRepository;
 
 import java.security.Key;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,6 +27,7 @@ public class JwtTotenService {
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsTFunction){
             final Claims claims = getClaims(token);
+        System.out.println("CLAIMS " + claims.toString());
             return claimsTFunction.apply(claims);
     }
 
@@ -51,8 +50,8 @@ public class JwtTotenService {
         return jwtTokenBlacklistRepository.findByToken(token) != null;
     }
     @Transactional
-    public void deleteTokenFromBalskList(String token){
-        jwtTokenBlacklistRepository.deleteJwtTokenBlacklistByToken(token);
+    public void deleteTokenFromBlackList(String token){
+        jwtTokenBlacklistRepository.deleteByToken(token.substring(7));
     }
 
 

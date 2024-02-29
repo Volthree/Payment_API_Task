@@ -25,21 +25,24 @@ public class AppConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
+
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityContextLogoutHandler securityContextLogoutHandler(){
-        return new  SecurityContextLogoutHandler();
+    public SecurityContextLogoutHandler securityContextLogoutHandler() {
+        return new SecurityContextLogoutHandler();
     }
 }

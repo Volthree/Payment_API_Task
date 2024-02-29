@@ -9,18 +9,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import vladislavmaltsev.paymenttaskapi.component.CustomAuth;
+import vladislavmaltsev.paymenttaskapi.handler.MyFailureHandler;
+import vladislavmaltsev.paymenttaskapi.filter.JwtAuthFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityFilterChainConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authProvider;
-    private final CustomAuth customAuth;
+    private final MyFailureHandler myFailureHandler;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/register", "/api/login")
@@ -28,14 +30,11 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .formLogin()
-//                .successHandler(customAuth)
                 .and()
                 .authenticationProvider(authProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
+                .failureHandler(myFailureHandler);
         return http.build();
     }
 }

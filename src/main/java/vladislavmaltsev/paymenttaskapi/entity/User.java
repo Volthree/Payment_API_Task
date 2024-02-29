@@ -10,6 +10,7 @@ import vladislavmaltsev.paymenttaskapi.util.Role;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -30,6 +31,13 @@ public class User implements UserDetails{
     Role role;
     @Column(name = "pass", nullable = false)
     String pass;
+    @Column(name = "islocked")
+    boolean isLocked;
+    @Column(name = "lockdate")
+    Date lockDate;
+    @Column(name = "lockcount")
+    int lockCount;
+
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     @ToString.Exclude

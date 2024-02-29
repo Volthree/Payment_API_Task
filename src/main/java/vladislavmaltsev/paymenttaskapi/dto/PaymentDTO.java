@@ -13,7 +13,6 @@ import java.util.Date;
 public class PaymentDTO {
     BigDecimal amount;
     Date date;
-    //    String userName;
     @ToString.Exclude
     User user;
 }

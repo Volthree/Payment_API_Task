@@ -12,6 +12,7 @@ import vladislavmaltsev.paymenttaskapi.entity.Payment;
 import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -22,5 +23,7 @@ public class UserDTO {
     String name;
     Role role;
     String pass;
-//    List<Payment> paymentList;
+    boolean isLocked;
+    Date lockDate;
+    int lockCount;
 }

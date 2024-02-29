@@ -6,7 +6,11 @@ CREATE TABLE users
     id   serial PRIMARY KEY,
     name VARCHAR(64) unique not null ,
     role varchar(32),
-    pass varchar(128) default '123'
+    pass varchar(128) default '123',
+    islocked boolean,
+    lockdate timestamp,
+    lockcount int
+
 );
 CREATE TABLE payments
 (
