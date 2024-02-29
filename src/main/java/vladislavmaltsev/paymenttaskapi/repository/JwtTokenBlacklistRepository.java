@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface JwtTokenBlacklistRepository extends JpaRepository<JwtTokenBlacklist, Long> {
 
     JwtTokenBlacklist findByToken(String token);
+    JwtTokenBlacklist deleteJwtTokenBlacklistByToken(String token);
 }

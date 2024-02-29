@@ -17,8 +17,6 @@ import static vladislavmaltsev.paymenttaskapi.util.MappingDTOClass.mapDTOAndClas
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-
-
     public PaymentDTO getPayment(String userName) {
         return mapDTOAndClass(
                 paymentRepository.findLatestPaymentByUserName(userName)

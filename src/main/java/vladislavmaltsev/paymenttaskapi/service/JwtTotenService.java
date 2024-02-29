@@ -46,6 +46,15 @@ public class JwtTotenService {
         tokenBlacklist.setToken(token);
         jwtTokenBlacklistRepository.save(tokenBlacklist);
     }
+    @Transactional
+    public boolean isContainsInBlacklist(String token){
+        return jwtTokenBlacklistRepository.findByToken(token) != null;
+    }
+    @Transactional
+    public void deleteTokenFromBalskList(String token){
+        jwtTokenBlacklistRepository.deleteJwtTokenBlacklistByToken(token);
+    }
+
 
     private Key getSecretKey() {
         byte[] bytesKey =Decoders.BASE64.decode(secterKey);
@@ -75,7 +84,7 @@ public class JwtTotenService {
         return Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
-                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + 10000 * 60 * 24))
                 .compact();
     }
 }

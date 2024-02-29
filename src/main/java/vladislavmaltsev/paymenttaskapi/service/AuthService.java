@@ -6,14 +6,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vladislavmaltsev.paymenttaskapi.dto.PaymentDTO;
-import vladislavmaltsev.paymenttaskapi.entity.Payment;
 import vladislavmaltsev.paymenttaskapi.entity.User;
 import vladislavmaltsev.paymenttaskapi.repository.UserRepository;
 import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +21,7 @@ public class AuthService {
     private final JwtTotenService jwtTotenService;
     private final AuthenticationManager authenticationManager;
     private final PaymentService paymentService;
+
     public AuthenticationResponse register(RegisterRequest registerRequest) {
         var user = User.builder()
                 .name(registerRequest.getName())
@@ -35,6 +34,9 @@ public class AuthService {
 //                                .user()
 //                        .build()))
                 .build();
+        if (userRepository.findByName(registerRequest.getName()).isPresent()) {
+            return null;
+        }
         userRepository.save(user);
         PaymentDTO paymentDTO = PaymentDTO.builder()
                 .amount(new BigDecimal("8"))

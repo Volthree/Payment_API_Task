@@ -1,5 +1,6 @@
 package vladislavmaltsev.paymenttaskapi.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,11 +23,10 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PaymentService paymentService;
+    private final JwtTotenService jwtTotenService;
 
 
-    @Transactional
-    public PaymentDTO getMoney(String name) {
-        System.out.println("Enter getMoney");
+    public PaymentDTO subtrackAmount(String name) {
         UserDTO userDTO =
                 mapDTOAndClass(
                         userRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name + " does not exists")),
@@ -34,7 +34,13 @@ public class UserService implements UserDetailsService {
         var paymentDto = paymentService.getPayment(userDTO.getName());
         paymentDto.setAmount(paymentDto.getAmount().subtract(new BigDecimal("1.1")));
         paymentDto.setDate(new Date());
-        return paymentService.savePayment(paymentDto);
+        var savee =  paymentService.savePayment(paymentDto);
+        return savee;
+    }
+    @Transactional
+    public PaymentDTO subtrackAmount(HttpServletRequest request) {
+        var userName = jwtTotenService.getUserNameFromToken(request.getHeader("Authorization").substring(7));
+       return subtrackAmount(userName);
     }
 
     @Override

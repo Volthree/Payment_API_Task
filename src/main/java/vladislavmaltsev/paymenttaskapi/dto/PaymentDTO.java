@@ -1,18 +1,10 @@
 package vladislavmaltsev.paymenttaskapi.dto;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import vladislavmaltsev.paymenttaskapi.entity.Payment;
+import lombok.*;
 import vladislavmaltsev.paymenttaskapi.entity.User;
-import vladislavmaltsev.paymenttaskapi.util.Role;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +13,7 @@ import java.util.List;
 public class PaymentDTO {
     BigDecimal amount;
     Date date;
-//    String userName;
+    //    String userName;
+    @ToString.Exclude
     User user;
 }
