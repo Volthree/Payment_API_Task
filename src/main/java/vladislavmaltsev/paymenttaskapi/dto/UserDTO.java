@@ -22,5 +22,5 @@ public class UserDTO {
     String name;
     Role role;
     String pass;
-    List<Payment> paymentList;
+//    List<Payment> paymentList;
 }

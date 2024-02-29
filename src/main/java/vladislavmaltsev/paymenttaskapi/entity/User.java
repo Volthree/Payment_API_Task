@@ -34,7 +34,7 @@ public class User implements UserDetails{
     @Column(name = "pass", nullable = false)
     String pass;
 
-    @OneToMany(mappedBy = "payments", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     List<Payment> paymentList = new ArrayList<>();
 
     @Override

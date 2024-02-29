@@ -38,12 +38,13 @@ public class APIController {
     private ResponseEntity<String> authenticate(
             @RequestBody AuthenticationRequest authenticationRequest
     ) {
+        System.out.println("Enter login ");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + authService.authenticate(authenticationRequest).getToken());
         HttpEntity<String> entity = new HttpEntity<>(headers);
         String url = "http://localhost:8080/api/payment/" + userService.loadUserByUsername(authenticationRequest.getName()).getUsername();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        System.out.println("authenticate");
+        System.out.println("End login");
         return response;
     }
 

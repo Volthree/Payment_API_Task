@@ -2,6 +2,7 @@ package vladislavmaltsev.paymenttaskapi.dto;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import vladislavmaltsev.paymenttaskapi.entity.Payment;
@@ -16,9 +17,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PaymentDTO {
-    long id;
-    User userid;
     BigDecimal amount;
     Date date;
+//    String userName;
+    User user;
 }

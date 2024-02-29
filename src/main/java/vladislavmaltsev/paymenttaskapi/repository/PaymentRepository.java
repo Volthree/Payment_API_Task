@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-    @Query("SELECT p FROM Payment p WHERE p.user.id = :userName ORDER BY p.date DESC")
+    @Query("SELECT p FROM Payment p WHERE p.user.name = :userName AND p.date = (SELECT MAX(p2.date) FROM Payment p2 WHERE p2.user.name = :userName)")
     Optional<Payment> findLatestPaymentByUserName(@Param("userName") String userName);
 }
