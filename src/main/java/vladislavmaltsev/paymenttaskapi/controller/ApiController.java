@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vladislavmaltsev.paymenttaskapi.service.*;
+import vladislavmaltsev.paymenttaskapi.service.serviceutil.AuthenticationRequest;
+import vladislavmaltsev.paymenttaskapi.service.serviceutil.RegisterRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,7 +16,7 @@ public class ApiController {
     private final UserService userService;
     private final AuthService authService;
     private final LogoutService logoutService;
-    private final JwtTotenService jwtTotenService;
+    private final JwtTokenService jwtTokenService;
 
     @PostMapping("/register")
     private ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
@@ -28,7 +30,7 @@ public class ApiController {
     @GetMapping("/login")
     private ResponseEntity<String> login(@RequestBody AuthenticationRequest authenticationRequest) {
         var token = authService.authenticate(authenticationRequest).getToken();
-        jwtTotenService.deleteTokenFromBlackList(token);
+        jwtTokenService.deleteTokenFromBlackList(token);
         return ResponseEntity.ok("Logged in with token: " + token);
     }
 
@@ -41,6 +43,6 @@ public class ApiController {
 
     @PostMapping("/payment")
     public ResponseEntity<String> payment(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.subtrackAmount(request).toString());
+        return ResponseEntity.ok(userService.subtractAmount(request).toString());
     }
 }

@@ -23,10 +23,10 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PaymentService paymentService;
-    private final JwtTotenService jwtTotenService;
+    private final JwtTokenService jwtTokenService;
 
 
-    public PaymentDTO subtrackAmount(String name) {
+    public PaymentDTO subtractAmount(String name) {
         UserDTO userDTO =
                 mapDTOAndClass(
                         userRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name + " does not exists")),
@@ -34,37 +34,22 @@ public class UserService implements UserDetailsService {
         var paymentDto = paymentService.getPayment(userDTO.getName());
         paymentDto.setAmount(paymentDto.getAmount().subtract(new BigDecimal("1.1")));
         paymentDto.setDate(new Date());
-        var savee =  paymentService.savePayment(paymentDto);
-        return savee;
+        return paymentService.savePayment(paymentDto);
     }
     @Transactional
-    public PaymentDTO subtrackAmount(HttpServletRequest request) {
-        var userName = jwtTotenService.getUserNameFromToken(request.getHeader("Authorization").substring(7));
-       return subtrackAmount(userName);
+    public PaymentDTO subtractAmount(HttpServletRequest request) {
+        var userName = jwtTokenService.getUserNameFromToken(request.getHeader("Authorization").substring(7));
+       return subtractAmount(userName);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Enter loadUserByUsername");
-        var v = userRepository.findByName(username)
+        return userRepository.findByName(username)
                 .map(user -> new org.springframework.security.core.userdetails.User(
                         String.valueOf(user.getUsername()),
                         user.getPass(),
                         Collections.singleton(user.getRole())
                 ))
                 .orElseThrow(() -> new NoSuchElementException(username + " does not exists"));
-        System.out.println("End loadUserByUsername");
-        return v;
-    }
-
-    public Optional<UserDTO> save(UserDTO userParametersDTO) {
-        return Optional.ofNullable(
-                        mapDTOAndClass(
-                                userRepository.save(
-                                        Objects.requireNonNull(mapDTOAndClass(userParametersDTO,
-                                                User.class).orElseThrow())
-                                ),
-                                UserDTO.class))
-                .orElseThrow();
     }
 }

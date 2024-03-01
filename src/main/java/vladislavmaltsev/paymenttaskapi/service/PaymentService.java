@@ -15,7 +15,6 @@ import static vladislavmaltsev.paymenttaskapi.util.MappingDTOClass.mapDTOAndClas
 @RequiredArgsConstructor
 @Transactional
 public class PaymentService {
-
     private final PaymentRepository paymentRepository;
     public PaymentDTO getPayment(String userName) {
         return mapDTOAndClass(

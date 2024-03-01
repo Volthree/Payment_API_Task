@@ -8,8 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import vladislavmaltsev.paymenttaskapi.handler.MyFailureHandler;
+import vladislavmaltsev.paymenttaskapi.handler.FailureLoginHandler;
 import vladislavmaltsev.paymenttaskapi.filter.JwtAuthFilter;
 
 @Configuration
@@ -19,7 +20,7 @@ public class SecurityFilterChainConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authProvider;
-    private final MyFailureHandler myFailureHandler;
+    private final AuthenticationFailureHandler failureLoginHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +35,7 @@ public class SecurityFilterChainConfig {
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
-                .failureHandler(myFailureHandler);
+                .failureHandler(failureLoginHandler);
         return http.build();
     }
 }

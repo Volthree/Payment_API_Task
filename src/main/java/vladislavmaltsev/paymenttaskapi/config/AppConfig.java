@@ -9,8 +9,10 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.client.RestTemplate;
+import vladislavmaltsev.paymenttaskapi.handler.FailureLoginHandler;
 import vladislavmaltsev.paymenttaskapi.service.UserService;
 
 @Configuration
@@ -44,5 +46,9 @@ public class AppConfig {
     @Bean
     public SecurityContextLogoutHandler securityContextLogoutHandler() {
         return new SecurityContextLogoutHandler();
+    }
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler(){
+        return new FailureLoginHandler();
     }
 }

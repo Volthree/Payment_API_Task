@@ -1,4 +1,4 @@
-package vladislavmaltsev.paymenttaskapi.service;
+package vladislavmaltsev.paymenttaskapi.service.serviceutil;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthenticationResponse {
-    private String token;
+public class RegisterRequest {
+    private String name;
+    private String pass;
 }

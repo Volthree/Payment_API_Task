@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LogoutService {
-    private final JwtTotenService jwtTotenService;
+    private final JwtTokenService jwtTokenService;
     private final SecurityContextLogoutHandler securityContextLogoutHandler;
 
     public void logout(HttpServletRequest request,
                        HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        jwtTotenService.invalidateToken(request.getHeader("Authorization").substring(7));
+        jwtTokenService.invalidateToken(request.getHeader("Authorization").substring(7));
         securityContextLogoutHandler.logout(request, response, authentication);
     }
 }

@@ -12,16 +12,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import vladislavmaltsev.paymenttaskapi.service.JwtTotenService;
+import vladislavmaltsev.paymenttaskapi.service.JwtTokenService;
 import vladislavmaltsev.paymenttaskapi.service.UserService;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtTotenService jwtTotenService;
+    private final JwtTokenService jwtTokenService;
     private final UserService userService;
 
     @Override
@@ -30,36 +29,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain) throws ServletException, IOException {
         final String authenticationHeader = request.getHeader("Authorization");
-        System.out.println(request.getRequestURI());
         final String jwt;
         final String userName;
-        boolean deleted = false;
-        System.out.println("in filter " + authenticationHeader);
         if (
-//                !Objects.equals(request.getRequestURI(), "/api/login") &&
                 (authenticationHeader == null || !authenticationHeader.startsWith("Bearer "))) {
-            System.out.println("Bad token");
             filterChain.doFilter(request, response);
             return;
         }
-            jwt = authenticationHeader.substring(7);
-
-
-//        if(Objects.equals(request.getRequestURI(), "/api/login")){
-//            System.out.println("DELETE TOKEN");
-//            jwtTotenService.deleteTokenFromBalskList(jwt);
-//            deleted = true;
-//        }
-        userName = jwtTotenService.getUserNameFromToken(jwt);
+        jwt = authenticationHeader.substring(7);
+        userName = jwtTokenService.getUserNameFromToken(jwt);
         if (userName != null
                 && SecurityContextHolder.getContext().getAuthentication() == null
-                && !deleted && !jwtTotenService.isContainsInBlacklist(jwt)) {
-
-            System.out.println("Enter if authContext null && user != null");
+                && !jwtTokenService.isContainsInBlacklist(jwt)) {
             UserDetails userDetails = userService.loadUserByUsername(userName);
-            if (jwtTotenService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            if (jwtTokenService.isTokenValid(jwt, userDetails)) {
+                var authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
@@ -68,6 +56,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-
 }
