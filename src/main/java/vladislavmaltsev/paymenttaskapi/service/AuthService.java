@@ -33,7 +33,7 @@ public class AuthService {
                 .role(Role.USER)
                 .build();
         if (userRepository.findByName(registerRequest.getName()).isPresent())
-            return null;
+            return AuthenticationResponse.builder().build();
         userRepository.save(user);
         var paymentDTO = PaymentDTO.builder()
                 .amount(new BigDecimal("8"))

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vladislavmaltsev.paymenttaskapi.dto.PaymentDTO;
 import vladislavmaltsev.paymenttaskapi.dto.UserDTO;
-import vladislavmaltsev.paymenttaskapi.entity.User;
 import vladislavmaltsev.paymenttaskapi.repository.UserRepository;
 
 import java.math.BigDecimal;
@@ -26,7 +25,7 @@ public class UserService implements UserDetailsService {
     private final JwtTokenService jwtTokenService;
 
 
-    public PaymentDTO subtractAmount(String name) {
+    public PaymentDTO subtractAmountFromUser(String name) {
         UserDTO userDTO =
                 mapDTOAndClass(
                         userRepository.findByName(name).orElseThrow(() -> new NoSuchElementException(name + " does not exists")),
@@ -37,9 +36,9 @@ public class UserService implements UserDetailsService {
         return paymentService.savePayment(paymentDto);
     }
     @Transactional
-    public PaymentDTO subtractAmount(HttpServletRequest request) {
+    public PaymentDTO subtractAmountFromUser(HttpServletRequest request) {
         var userName = jwtTokenService.getUserNameFromToken(request.getHeader("Authorization").substring(7));
-       return subtractAmount(userName);
+       return subtractAmountFromUser(userName);
     }
 
     @Override

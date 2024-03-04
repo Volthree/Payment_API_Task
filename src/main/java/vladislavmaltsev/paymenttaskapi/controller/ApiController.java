@@ -21,7 +21,7 @@ public class ApiController {
     @PostMapping("/register")
     private ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         var result = authService.register(registerRequest);
-        if (result == null) {
+        if (result.getToken().isEmpty()) {
             return ResponseEntity.ok("Already registered");
         }
         return ResponseEntity.ok("Registered token: " + result.getToken());
@@ -43,6 +43,6 @@ public class ApiController {
 
     @PostMapping("/payment")
     public ResponseEntity<String> payment(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.subtractAmount(request).toString());
+        return ResponseEntity.ok(userService.subtractAmountFromUser(request).toString());
     }
 }
