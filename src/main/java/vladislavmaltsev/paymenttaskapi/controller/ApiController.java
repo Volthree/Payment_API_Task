@@ -19,7 +19,7 @@ public class ApiController {
     private final JwtTokenService jwtTokenService;
 
     @PostMapping("/register")
-    private ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         var result = authService.register(registerRequest);
         if (result.getToken().isEmpty()) {
             return ResponseEntity.ok("Already registered");
@@ -28,7 +28,7 @@ public class ApiController {
     }
 
     @GetMapping("/login")
-    private ResponseEntity<String> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<String> login(@RequestBody AuthenticationRequest authenticationRequest) {
         var token = authService.authenticate(authenticationRequest).getToken();
         jwtTokenService.deleteTokenFromBlackList(token);
         return ResponseEntity.ok("Logged in with token: " + token);
